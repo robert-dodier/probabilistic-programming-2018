@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Getting from Machine Learning Outputs to Decisions</title>
+    <title>Probabilistic Programming: What are all the random numbers for?</title>
     <meta charset="utf-8">
     <style>
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -54,19 +54,21 @@ class: center, middle
 ---
 # Motivation 2
 
- * At a fundamental level, we need integrals because `\(P(A \; \mathrm{or} \; B) = P(A) + P(B) + P(A \; \mathrm{and} \; B)\)`
+ * At a fundamental level, we need integrals because
+ 
+ `\(P(A \; \mathrm{or} \; B) = P(A) + P(B) + P(A \; \mathrm{and} \; B)\)`
 
   * When A and B are mutually exclusive, `\(P(A \; \mathrm{and} \; B) = 0\)`, so `\(P(A \; \mathrm{or} \; B) = P(A) + P(B)\)`
 
 ---
 
- * Suppose `\(A\)` is the union of mutually exclusive `\(A_1, A_2, A_3, \ldots, A_n\)`
+ * Suppose `\(S\)` is the union of mutually exclusive `\(S_1, \ldots, S_n\)`
 
-  * i.e. `\(A = A_1 \; \mathrm{or} \; A_2 \; \mathrm{or} \; A_3 \; \mathrm{or} \; \ldots \; \mathrm{or} \; A_n\)`
+  * i.e. `\(x \in S = x \in S_1 \; \mathrm{or} \; \ldots \; \mathrm{or} \; x \in S_n\)`
 
-  * Then `\(P(A) = \sum_{k=1}^n P(A_k)\)`
+  * Then `\(P(x \in S) = \sum_{k=1}^n P(x \in S_k)\)`
 
- * Suppose `\(A\)` is divided into infinitesimal bits, then `\(P(A) = \int_A P(x) dx\)`
+ * Suppose `\(S\)` is divided into infinitesimal bits, then `\(P(x \in S) = \int_S P(x) dx\)`
 
 ---
 # Examples of integrals, in words
@@ -103,29 +105,44 @@ class: center, middle
 ---
 # Examples of integrals, as math formulas
 
- * `\(P(A) = \int_A P(x) dx\)`
+ * Find probability that some parameter falls in a specified set
 
---
+ `\(P(x \in S) = \int_S P(x) dx\)`
 
- * Given `\(P(A, B)\)`,
-
-  * `\(P(A) = \int_{-\infty}^{\infty} P(x, B) dx\)`
- 
-  * Deriving `\(P(A)\)` from `\(P(A, B)\)` is called `marginalizing'
+  * We saw this one a few minutes ago.
 
 ---
 
- * `\(E[f] = \int_{-\infty}^{\infty} P(x) f(x) dx\)`
+ * Make a prediction about an interesting variable, averaging over less-interesting parameters
+
+ * Given `\(P(x, y)\)`,
+
+  `\(P(y) = \int_{-\infty}^{\infty} P(x, y) dx\)`
+ 
+ * Deriving `\(P(y)\)` from `\(P(x, y)\)` is called marginalizing
+
+---
+
+ * Compute expected cost of some action, averaging over unknown states of nature
+
+ `\(E[f] = \int_{-\infty}^{\infty} P(x) f(x) dx\)`
 
   * `\(E[f]\)` is the expected value of `\(f(x)\)` with respect to `\(P(x)\)`
 
+  * `\(f\)` is typically interpreted as a cost or benefit function
+
+  * Costs or benefits associated with more probable values `\(x\)` get more weight
+
 ---
+# An important general case involving integrals
 
  * Bayes' theorem (simplest form):
 
-  * `\(P(A | B) = \frac{P(B | A) P(A)}{P(B)} = \frac{P(B | A) P(A)}{\int_{-\infty}^{\infty} P(B | A) P(A = x) dx}\)`
+  * `\(P(A | B) = \frac{P(B | A) P(A)}{P(B)} = \frac{P(B | A) P(A)}{\int_{-\infty}^{\infty} P(B | x) P(x) dx}\)`
 
   * Calculation of normalizing constant requires marginalizing
+
+ * This is just the simplest case of Bayes' theorem; there can be any number of variables involved
 
 ---
 
