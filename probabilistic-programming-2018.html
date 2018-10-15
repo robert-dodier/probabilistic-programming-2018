@@ -36,11 +36,11 @@ class: center, middle
 
   * PyMC3, Stan, BUGS, etc.
 
- * What are all those numbers for?
+ * What are all those numbers for? For what purpose are we generating random numbers?
+ What problem are we solving by generating random numbers?
 
-  * Why are we generating random numbers?
-
- * I'll talk about the motivation for all that random stuff, and talk a little about alternatives.
+ * I'll talk about the motivation for all that random stuff, and talk a little about alternatives
+ that don't involve random numbers.
 
 ---
 # Motivation 1
@@ -54,28 +54,36 @@ class: center, middle
 ---
 # Motivation 2
 
- * At a fundamental level, we need integrals because `\(P(A \mathrm{or} B) = P(A) + P(B) + P(A \mathrm{and} B)\)`
+ * At a fundamental level, we need integrals because `\(P(A \; \mathrm{or} \; B) = P(A) + P(B) + P(A \; \mathrm{and} \; B)\)`
 
-  * When A and B are mutually exclusive, `\(P(A \mathrm{and} B) = 0\)`, so `\(P(A or B) = P(A) + P(B)\)`
+  * When A and B are mutually exclusive, `\(P(A \; \mathrm{and} \; B) = 0\)`, so `\(P(A \; \mathrm{or} \; B) = P(A) + P(B)\)`
+
+---
 
  * Suppose `\(A\)` is the union of mutually exclusive `\(A_1, A_2, A_3, \ldots, A_n\)`
+
+  * i.e. `\(A = A_1 \; \mathrm{or} \; A_2 \; \mathrm{or} \; A_3 \; \mathrm{or} \; \ldots \; \mathrm{or} \; A_n\)`
 
   * Then `\(P(A) = \sum_{k=1}^n P(A_k)\)`
 
  * Suppose `\(A\)` is divided into infinitesimal bits, then `\(P(A) = \int_A P(x) dx\)`
 
 ---
-# Examples of integrals in probability problems, in words
+# Examples of integrals, in words
 
  * Find probability that some parameter falls in a specified set
 
   * e.g. parameter is positive, parameter is below a threshold, parameter is within certain distance of a point
+
+---
 
  * Make a prediction about an interesting variable, averaging over less-interesting parameters
 
   * e.g. rainfall as a function of elevation and temperature from a multi-parameter model
 
   * e.g. mechanical failure as a function of observed sensor values from a model incorporating previous mechanical states
+
+---
 
  * Compute expected cost of some action, averaging over unknown states of nature
 
@@ -84,6 +92,7 @@ class: center, middle
   * Estimate net benefit of planting millions of trees, with future climate and effect of trees unknown
 
 ---
+# Motivation 2, summary
 
  * What all these examples have in common is the need to compute total amounts or averages over some variables
 
@@ -96,15 +105,21 @@ class: center, middle
 
  * `\(P(A) = \int_A P(x) dx\)`
 
+--
+
  * Given `\(P(A, B)\)`,
 
   * `\(P(A) = \int_{-\infty}^{\infty} P(x, B) dx\)`
  
   * Deriving `\(P(A)\)` from `\(P(A, B)\)` is called `marginalizing'
 
- * `\(E[f] = \int_{-\infty}^{infty} P(x) f(x) dx\)`
+---
+
+ * `\(E[f] = \int_{-\infty}^{\infty} P(x) f(x) dx\)`
 
   * `\(E[f]\)` is the expected value of `\(f(x)\)` with respect to `\(P(x)\)`
+
+---
 
  * Bayes' theorem (simplest form):
 
