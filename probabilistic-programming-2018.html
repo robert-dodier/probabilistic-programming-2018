@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Getting from Machine Learning Outputs to Decisions</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-slide-content h1, h2, h3 { font-size: 1.6em; }
+      .remark-slide-content { font-size: 1.8em; }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# What are all the random numbers for?
+## Robert Dodier
+## Probabilistic Programming meetup, Oct. 17, 2018
+### This presentation:
+### https://github.com/robert-dodier/probabilistic-programming-2018
+
+---
+# Introduction
+
+ * Software for Bayesian inference often makes use of streams of random numbers
+
+  * PyMC3, Stan, BUGS, etc.
+
+ * What are all those numbers for?
+
+  * Why are we generating random numbers?
+
+ * I'll talk about the motivation for all that random stuff, and talk a little about alternatives.
+
+---
+# Motivation 1
+
+ * We need random numbers to compute integrals
+
+  * Summation = adding up discrete items, integral = adding up continuous items
+
+ * Next question follows immediately, why are we computing integrals?
+
+---
+# Motivation 2
+
+ * At a fundamental level, we need integrals because `\(P(A \mathrm{or} B) = P(A) + P(B) + P(A \mathrm{and} B)\)`
+
+  * When A and B are mutually exclusive, `\(P(A \mathrm{and} B) = 0\)`, so `\(P(A or B) = P(A) + P(B)\)`
+
+ * Suppose `\(A\)` is the union of mutually exclusive `\(A_1, A_2, A_3, \ldots, A_n\)`
+
+  * Then `\(P(A) = \sum_{k=1}^n P(A_k)\)`
+
+ * Suppose `\(A\)` is divided into infinitesimal bits, then `\(P(A) = \int_A P(x) dx\)`
+
+---
+# Examples of integrals in probability problems, in words
+
+ * Find probability that some parameter falls in a specified set
+
+  * e.g. parameter is positive, parameter is below a threshold, parameter is within certain distance of a point
+
+ * Make a prediction about an interesting variable, averaging over less-interesting parameters
+
+  * e.g. rainfall as a function of elevation and temperature from a multi-parameter model
+
+  * e.g. mechanical failure as a function of observed sensor values from a model incorporating previous mechanical states
+
+ * Compute expected cost of some action, averaging over unknown states of nature
+
+  * Estimate operating cost of a car, averaging over wear and tear, accidents, future price of fuel
+
+  * Estimate net benefit of planting millions of trees, with future climate and effect of trees unknown
+
+---
+
+ * What all these examples have in common is the need to compute total amounts or averages over some variables
+
+ * These totals or averages are represented as integrals
+
+ * Let's rephrase the previous examples as formulas involving integrals
+
+---
+# Examples of integrals, as math formulas
+
+ * `\(P(A) = \int_A P(x) dx\)`
+
+ * Given `\(P(A, B)\)`,
+
+  * `\(P(A) = \int_{-\infty}^{\infty} P(x, B) dx\)`
+ 
+  * Deriving `\(P(A)\)` from `\(P(A, B)\)` is called `marginalizing'
+
+ * `\(E[f] = \int_{-\infty}^{infty} P(x) f(x) dx\)`
+
+  * `\(E[f]\)` is the expected value of `\(f(x)\)` with respect to `\(P(x)\)`
+
+ * Bayes' theorem (simplest form):
+
+  * `\(P(A | B) = \frac{P(B | A) P(A)}{P(B)} = \frac{P(B | A) P(A)}{\int_{-\infty}^{\infty} P(B | A) P(A = x) dx}\)`
+
+  * Calculation of normalizing constant requires marginalizing
+
+---
+
+ * The previous examples were all stated for one variable
+
+ * Often enough, we'll need to integrate over multiple variables
+
+  * e.g. `\(\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} P(A, B = x, C = y, D, E = z) dx dy dz\)`
+
+ * There will always be one dimension per unknown variable, and any number of unknowns
+
+  * therefore any number of dimensions of the integral
+
+---
+# Back to motivation 1
+
+ * Random numbers can help us compute integrals such as `\(\int_A P(x) dx\)`
+
+ * 
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+
+      // Setup MathJax
+      MathJax.Hub.Config({
+          tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+          }
+      });
+      MathJax.Hub.Queue(function() {
+          $(MathJax.Hub.getAllJax()).map(function(index, elem) {
+              return(elem.SourceElement());
+          }).parent().addClass('has-jax');
+      });
+
+      MathJax.Hub.Configured();
+    </script>
+  </body>
+</html>
