@@ -150,7 +150,7 @@ class: center, middle
 
  * Often enough, we'll need to integrate over multiple variables
 
-  * e.g. `\(\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} P(A, B = x, C = y, D, E = z) dx dy dz\)`
+  * e.g. `\(P(A, D) =\)` `\(\int \int \int P(A, B = x, C = y, D, E = z) dx dy dz\)`
 
  * There will always be one dimension per unknown variable, and any number of unknowns
 
@@ -159,11 +159,11 @@ class: center, middle
 ---
 # Back to motivation 1
 
- * Random numbers can help us compute integrals such as `\(\int_A P(x) dx\)`
+ * Random numbers can help us compute integrals such as `\(\int_S P(x) f(x) dx\)`
 
  * General strategy is to construct a sequence of numbers such that an average over the sequence converges to the integral.
 
-  * i.e. a sequence `\(x_k\)` such that `\(sum_k f(x_k) \rightarrow \int_A P(x) f(x) dx\)`
+  * i.e. a sequence `\(x_k\)` such that `\(\frac{1}{n} \sum_k f(x_k) \rightarrow \int_S P(x) f(x) dx\)`
 
  * That's great, what about other ways to approximate integrals?
 
@@ -180,8 +180,6 @@ class: center, middle
 
  * Low-discrepancy sequences, a.k.a. quasirandom numbers: more regular than random numbers, but less so than simple grid
 
-  * Generally applicable, more efficient than Monte Carlo in maybe several dimensions
-
 ---
 
  * Monte Carlo methods are the most widely applicable method
@@ -191,7 +189,9 @@ class: center, middle
 ---
 # From a random sequence to an integral approximation
 
- * As we were saying, we need  `\(x_k\)` such that `\(sum_k f(x_k) \rightarrow \int_A P(x) f(x) dx\)`
+ * As we were saying, we need  `\(x_k\)` such that `\(\frac{1}{n} \sum_k f(x_k) \rightarrow \int_S P(x) f(x) dx\)`
+
+ * We need a sequence of samples from `\(P(x)\)`
 
  * It's convenient to work with sequences where `\(x_k\)` depends on `\(x_{k-1}\)`
 
@@ -206,15 +206,19 @@ class: center, middle
 
   * i.e. if a cloud of points is distributed according to `\(P(x)\)`, then the distribution stays the same even as all the points jump from place to place
 
+---
+
  * Whether the Markov chain has a unique stationary distribution depends on properties:
 
-  * Detailed balance: just as likely to jump from point `\(a\)` to `\(b\)` as from `\(b\)` to `\(a\)`
+  * Just as likely to jump from point `\(a\)` to `\(b\)` as from `\(b\)` to `\(a\)`
 
-  * Aperiodic, positive recurrent: might stay in same place, and will eventually come back if we do wander away
+  * Might stay in same place, and will eventually come back if we do wander away
+
+ * These are enough to deduce existence and uniqueness of a stationary distribution!
 
 ---
 
- * These are weak constraints; many different Markov chains have these properties
+ * These properties are weak constraints; many different Markov chains have these properties
 
  * Varieties of Metropolis-Hastings and Gibbs samplers are widely used
 
@@ -223,11 +227,40 @@ class: center, middle
  * "No U-Turn sampler" (NUTS) applies U-turn avoidance heuristic to hybrid Monte Carlo
 
 ---
-# Back to solving problems
+Example of a target distribution
 
+![Function proportional to target distribution](proportional_target.svg)
+
+---
+
+"Burn-in" sequence -- initial samples not representative of distribution
+
+!["Burn-in" sequence](target+initial-sequence.svg)
+
+---
+
+Running the chain longer yields more representative samples
+
+![Burn-in plus additional samples](target+initial+subsequent-sequence.svg)
 
 ---
 # Law of large numbers
+
+ * One version of law of large numbers:
+
+ `\(\frac{1}{n} \sum_{k=1}^n x_k\)` converges to `\(\bar x\)` as `\(n\)` gets bigger and bigger
+
+ where `\(x_k\)` is a sequence of samples from `\(P(x)\)`
+
+ * Special case of expected value of a function: just let `\(f(x) = x\)`
+
+---
+
+ * Convergence is not very fast, something like `\(1/\sqrt{n}\)` or maybe `\(1/n\)`
+
+  * i.e. to get another digit correct, you need 10 or 100 times as many samples
+
+ * You can quickly get a ballpark estimate, useful for many practical problems
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js" type="text/javascript"></script>
